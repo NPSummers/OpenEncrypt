@@ -1,0 +1,14 @@
+[project]
+name = "openencrypt"
+version = "0.1.0-edu"
+description = "Educational PQ offline encryption (Kyber-like) in pure Python"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+	{ name = "0x1000007e" }
+]
+
+[project.scripts]
+openencrypt = "openencrypt.cli:main"
+
+

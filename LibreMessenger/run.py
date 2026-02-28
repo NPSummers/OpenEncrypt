@@ -11,6 +11,6 @@ from LibreMessenger.app import create_app
 app = create_app()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("LIBREMESSENGER_PORT", "5050"))
+    port = int(os.environ.get("LIBREMESSENGER_PORT", "8000"))
     app.run(host="127.0.0.1", port=port, debug=True)
 

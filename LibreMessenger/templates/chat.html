@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p>Signed in as <strong>{{ username }}</strong>.</p>
+  <form method="post" action="{{ url_for('logout') }}">
+    <button type="submit">Log out</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>New message</h2>
+  <form method="post" action="{{ url_for('chat') }}">
+    <label for="recipient">Recipient username</label>
+    <input id="recipient" name="recipient" list="known-users" required>
+    <datalist id="known-users">
+      {% for user in users %}
+        {% if user != username %}
+          <option value="{{ user }}">
+        {% endif %}
+      {% endfor %}
+    </datalist>
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="4" required></textarea>
+    <button type="submit">Send encrypted message</button>
+  </form>
+</div>
+
+<div class="row">
+  <div class="card">
+    <h2>Inbox</h2>
+    {% if inbox_messages %}
+      {% for msg in inbox_messages %}
+        <div class="msg">
+          <div><strong>From:</strong> {{ msg.peer }}</div>
+          <div class="muted">{{ msg.created_at }}</div>
+          <div>{{ msg.plaintext }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No messages yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Sent (decrypted from your local encrypted copies)</h2>
+    {% if sent_messages %}
+      {% for msg in sent_messages %}
+        <div class="msg">
+          <div><strong>To:</strong> {{ msg.peer }}</div>
+          <div class="muted">{{ msg.created_at }}</div>
+          <div>{{ msg.plaintext }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No sent messages yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

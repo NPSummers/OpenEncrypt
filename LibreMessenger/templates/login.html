@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrap">
+  <h2>Welcome to LibreMessenger</h2>
+  <p style="color:#949ba4; margin-top:-0.2rem;">Encrypted DMs powered by OpenEncrypt</p>
+  <form method="post">
+    <label class="label" for="username">USERNAME</label>
+    <input class="input" id="username" name="username" required>
+    <label class="label" for="password">PASSWORD</label>
+    <input class="input" id="password" name="password" type="password" required>
+    <button class="button" type="submit">Sign In</button>
+  </form>
+  <p style="margin-top:0.9rem;">Need an account? <a href="{{ url_for('register') }}">Register</a></p>
+</div>
+{% endblock %}
+

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrap">
+  <h2>Create your account</h2>
+  <p style="color:#949ba4; margin-top:-0.2rem;">Generate your messenger profile and keys</p>
+  <form method="post">
+    <label class="label" for="username">USERNAME</label>
+    <input class="input" id="username" name="username" minlength="3" maxlength="32" required>
+    <label class="label" for="password">PASSWORD</label>
+    <input class="input" id="password" name="password" type="password" minlength="8" required>
+    <button class="button" type="submit">Register</button>
+  </form>
+  <p style="margin-top:0.9rem;">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}
+

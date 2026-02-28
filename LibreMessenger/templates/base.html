@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibreMessenger</title>
+  <style>
+    :root {
+      --bg: #313338;
+      --panel: #2b2d31;
+      --panel-2: #1e1f22;
+      --panel-3: #232428;
+      --text: #dbdee1;
+      --muted: #949ba4;
+      --accent: #5865f2;
+      --success: #248046;
+      --danger: #da373c;
+      --border: #1a1b1e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "gg sans", "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: #89b4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .auth-wrap {
+      max-width: 460px;
+      margin: 8vh auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .label { display: block; margin-top: 0.7rem; color: var(--muted); font-size: 0.86rem; font-weight: 700; }
+    .input, .select, .textarea, .button {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #3f4147;
+      background: #1f2023;
+      color: var(--text);
+      padding: 0.62rem 0.72rem;
+      margin-top: 0.3rem;
+    }
+    .button {
+      background: var(--accent);
+      border-color: transparent;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .button:hover { filter: brightness(1.07); }
+    .button-danger { background: var(--danger); }
+    .flash-wrap { position: fixed; top: 14px; right: 14px; display: grid; gap: 8px; z-index: 50; }
+    .flash { padding: 0.65rem 0.8rem; border-radius: 8px; font-size: 0.9rem; border: 1px solid transparent; min-width: 220px; }
+    .flash.success { background: rgba(36, 128, 70, 0.2); border-color: var(--success); }
+    .flash.error { background: rgba(218, 55, 60, 0.2); border-color: var(--danger); }
+  </style>
+</head>
+<body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</body>
+</html>
+

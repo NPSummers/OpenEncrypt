@@ -1,5 +1,5 @@
 """
-OpenEncrypt: Educational post-quantum (Kyber-like) offline encryption in pure Python.
+OpenEncrypt: Pure-Python post-quantum offline encryption prototype.
 
 WARNING: This implementation is for learning and experimentation only. It is not
 constant-time, has not been audited, and should not be used to protect sensitive data
@@ -12,6 +12,6 @@ __all__ = [
 
 
 def version() -> str:
-	return "0.1.0-edu"
+	return "0.3.0"
 
 

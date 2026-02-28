@@ -1,6 +1,13 @@
-## OpenEncrypt (Educational)
+## OpenEncrypt (Pure Python, experimental)
 
-This is an educational, from-scratch Python prototype inspired by CRYSTALS-Kyber and SPHINCS+. It is not constant-time and has not been audited. Do not use for real security.
+This is a from-scratch Python prototype that bundles:
+- **CRYSTALS-Kyber Round3 KEM (v3.01)** (spec-aligned, pure stdlib Python)
+- A **SPHINCS+ structured signature** (FORS + WOTS+ hypertree, SHAKE256-based) in `openencrypt/sphincs_plus.py`
+
+It is **not constant-time**, not audited, and Python is not a good vehicle for production post-quantum cryptography implementations. Treat this as an offline prototype and learning tool.
+
+Kyber spec reference: [`kyber-specification-round3-20210131.pdf`](https://pq-crystals.org/kyber/data/kyber-specification-round3-20210131.pdf)
+SPHINCS+ design reference: [`sphincs+-paper.pdf`](https://sphincs.org/data/sphincs+-paper.pdf)
 
 ### How it works (high level)
 
@@ -52,6 +59,18 @@ If your secret key is passphrase-protected add:
 python -m openencrypt.openencrypt decrypt --input msg.asc --output out.txt --secret sec.asc --public pub.asc
 ```
 
+### Failure behavior
+
+Decryption failures are deliberately **uniform** (always `decryption failed`) to reduce remote timing/oracle signal.
+
+### Selecting Kyber parameter sets
+
+Default is **Kyber512**. You can choose:
+
+```bash
+python -m openencrypt.openencrypt keygen --kem Kyber768 --public pub.asc --secret sec.asc --name "Alice" --email "alice@example.com"
+```
+
 If your secret key is passphrase-protected add the same flag:
 
 ```bash
@@ -67,6 +86,6 @@ If your secret key is passphrase-protected add the same flag:
 
 ### Notes
 
-- Parameters are reduced for clarity and performance in Python.
-- Pure Python, offline; uses the standard library SHA3/SHAKE.
-- For learning only; not side-channel hardened.
+- Kyber KEM implementation is in `openencrypt/kyber.py` and follows the Round3 v3.01 structure (CPA PKE + FO transform).
+- Pure Python, offline; uses standard library `hashlib` SHA3/SHAKE.
+- Not side-channel hardened; “constant-time” in Python is best-effort only.

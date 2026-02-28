@@ -4,27 +4,64 @@ import argparse
 import os
 import sys
 
-from .kyberlite import keygen, encapsulate, decapsulate, PublicKey, SecretKey
+from .kyber import (
+	KYBER512,
+	KYBER768,
+	KYBER1024,
+	PublicKey,
+	SecretKey,
+	decapsulate,
+	encapsulate,
+	keygen,
+	params_from_id,
+	params_to_id,
+)
 from .sha3 import sha3_256
 from .symm import encrypt as symm_encrypt, decrypt as symm_decrypt
 
 
+MAGIC = b"KYB3"
+
+
+def _params_from_args(name: str):
+	if name == "Kyber512":
+		return KYBER512
+	if name == "Kyber768":
+		return KYBER768
+	if name == "Kyber1024":
+		return KYBER1024
+	raise ValueError("unknown params (use Kyber512/Kyber768/Kyber1024)")
+
+
+def _wrap_blob(params_id: int, payload: bytes) -> bytes:
+	return MAGIC + bytes([params_id]) + payload
+
+
+def _unwrap_blob(blob: bytes) -> tuple[int, bytes]:
+	if len(blob) < 5 or blob[:4] != MAGIC:
+		raise ValueError("invalid Kyber blob (missing magic)")
+	return blob[4], blob[5:]
+
+
 def cmd_keygen(args: argparse.Namespace) -> None:
-	pk, sk = keygen()
+	params = _params_from_args(args.params)
+	pk, sk = keygen(params=params)
 	with open(args.public, "wb") as f:
-		f.write(pk.raw)
+		f.write(_wrap_blob(params_to_id(pk.params), pk.raw))
 	with open(args.secret, "wb") as f:
-		f.write(sk.raw)
+		f.write(_wrap_blob(params_to_id(sk.params), sk.raw))
 	print(f"wrote public key to {args.public}, secret key to {args.secret}")
 
 
 def cmd_encaps(args: argparse.Namespace) -> None:
 	with open(args.public, "rb") as f:
-		pk_bytes = f.read()
-	pk = PublicKey(pk_bytes)
+		pk_blob = f.read()
+	pid, pk_bytes = _unwrap_blob(pk_blob)
+	params = params_from_id(pid)
+	pk = PublicKey(params=params, raw=pk_bytes)
 	c, ss = encapsulate(pk)
 	with open(args.cipherkey, "wb") as f:
-		f.write(c)
+		f.write(_wrap_blob(pid, c))
 	with open(args.shared, "wb") as f:
 		f.write(ss)
 	print(f"wrote KEM ciphertext to {args.cipherkey}, shared secret to {args.shared}")
@@ -32,10 +69,15 @@ def cmd_encaps(args: argparse.Namespace) -> None:
 
 def cmd_decaps(args: argparse.Namespace) -> None:
 	with open(args.secret, "rb") as f:
-		sk_bytes = f.read()
-	sk = SecretKey(sk_bytes)
+		sk_blob = f.read()
+	pid_sk, sk_bytes = _unwrap_blob(sk_blob)
+	params = params_from_id(pid_sk)
+	sk = SecretKey(params=params, raw=sk_bytes)
 	with open(args.cipherkey, "rb") as f:
-		c = f.read()
+		c_blob = f.read()
+	pid_c, c = _unwrap_blob(c_blob)
+	if pid_c != pid_sk:
+		raise ValueError("ciphertext params do not match secret key params")
 	ss = decapsulate(sk, c)
 	with open(args.shared, "wb") as f:
 		f.write(ss)
@@ -73,12 +115,13 @@ def cmd_decrypt(args: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-	ap = argparse.ArgumentParser(prog="openencrypt", description="Educational PQ offline crypto")
+	ap = argparse.ArgumentParser(prog="openencrypt", description="Offline crypto (pure Python; experimental)")
 	sub = ap.add_subparsers(dest="cmd", required=True)
 
 	ap_k = sub.add_parser("keygen", help="generate keypair")
 	ap_k.add_argument("--public", default="pk.bin")
 	ap_k.add_argument("--secret", default="sk.bin")
+	ap_k.add_argument("--params", default="Kyber512", choices=["Kyber512", "Kyber768", "Kyber1024"])
 	ap_k.set_defaults(func=cmd_keygen)
 
 	ap_ce = sub.add_parser("encaps", help="encapsulate to a public key")

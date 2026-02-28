@@ -1,11 +1,11 @@
 [project]
 name = "openencrypt"
-version = "0.1.0-edu"
-description = "Educational PQ offline encryption (Kyber-like) in pure Python"
+version = "0.3.0"
+description = "Offline encryption prototype in pure Python (Kyber Round3 KEM; experimental)"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [
-	{ name = "0x1000007e" }
+	{ name = "IO-Chan" }
 ]
 
 [project.scripts]

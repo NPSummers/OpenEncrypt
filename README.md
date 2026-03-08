@@ -6,7 +6,7 @@ This is a from-scratch Python prototype that bundles:
 
 It is **not constant-time**, not audited, and Python is not a good vehicle for production post-quantum cryptography implementations. Treat this as an offline prototype and learning tool.
 
-Kyber spec reference: [`kyber-specification-round3-20210131.pdf`](https://pq-crystals.org/kyber/data/kyber-specification-round3-20210131.pdf) and [`eprint.iacr.org/2017/634.pdf`]([https://pq-crystals.org/kyber/data/kyber-specification-round3-20210131.pdf](https://eprint.iacr.org/2017/634.pdf))
+Kyber spec reference: [`kyber-specification-round3-20210131.pdf`](https://pq-crystals.org/kyber/data/kyber-specification-round3-20210131.pdf) and [`eprint.iacr.org/2017/634.pdf`](https://eprint.iacr.org/2017/634.pdf)
 SPHINCS+ design reference: [`sphincs+-paper.pdf`](https://sphincs.org/data/sphincs+-paper.pdf)
 
 ### How it works (high level)
